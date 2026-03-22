@@ -8,8 +8,8 @@ public class SearchCarRequest
 {
     [QueryParam] public string Make{get; set;} = "";
     [QueryParam] public string Model{get; set;} = "";
-    [QueryParam] public int Page{get; set;}
-    [QueryParam] public int Size{get; set;}
+    [QueryParam] public int Page{get; set;} = 1;
+    [QueryParam] public int Size{get; set;} = 20;
 }
 public class SearchCarEndpoint(ICarRepository _carRepository) : Endpoint<SearchCarRequest, EmptyResponse>
 {
