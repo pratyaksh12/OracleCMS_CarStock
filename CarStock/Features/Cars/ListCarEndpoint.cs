@@ -9,7 +9,7 @@ public class ListCarsRequest
     [QueryParam] public int Page{get; set;} = 1;
     [QueryParam] public int Size{get; set;} = 20;
 }
-public class ListCarEndpoint(ICarRepository _carRepository) : Endpoint<ListCarsRequest, object>
+public class ListCarEndpoint(ICarRepository _carRepository) : Endpoint<ListCarsRequest, EmptyResponse>
 {
     public override void Configure()
     {
@@ -21,6 +21,6 @@ public class ListCarEndpoint(ICarRepository _carRepository) : Endpoint<ListCarsR
         var dealerId = int.Parse(User.Claims.First(c => c.Type ==  "DealerId").Value);
         var result = await _carRepository.GetAllForDealerAsync(dealerId, req.Page, req.Size);
 
-        await HttpContext.Response.WriteAsJsonAsync(new {Data = result}, cancellationToken: ct);
+        await HttpContext.Response.WriteAsJsonAsync(new {Data = result.Cars, TotalCount = result.TotalCount}, cancellationToken: ct);
     }
 }

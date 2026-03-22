@@ -39,10 +39,10 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 
         if(dealer is null)
         {
-            await _dealerRepository.CreateAsync(new Dealer{Username = request.Username, PaswordHash = request.Password});
+            await _dealerRepository.CreateAsync(new Dealer{Username = request.Username, PasswordHash = request.Password});
             dealer = await _dealerRepository.GetByUsernameAsync(request.Username);
         }
-        else if(dealer.PaswordHash != request.Password)
+        else if(dealer.PasswordHash != request.Password)
         {
             HttpContext.Response.StatusCode = 401;
             return;    

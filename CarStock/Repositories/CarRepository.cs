@@ -19,7 +19,7 @@ public class CarRepository : ICarRepository
         using var connection = _connectionFactory.CreateConnection();
 
         var executable_query = @"
-            SELECT Id FROM Car WHERE Make = @Make AND Model = @Model AND Year = @Year
+            SELECT Id FROM Cars WHERE Make = @Make AND Model = @Model AND Year = @Year
         ";
 
         var existingCarId = await connection.QueryFirstOrDefaultAsync<int?>(executable_query, car);
@@ -32,7 +32,7 @@ public class CarRepository : ICarRepository
         {
             var create_car_query = @"
                 INSERT INTO Cars(Make, Model, Year)
-                VALUES (@Make, @Model, @Year)
+                VALUES (@Make, @Model, @Year);
                 SELECT last_insert_rowid();
             ";
 
@@ -40,7 +40,7 @@ public class CarRepository : ICarRepository
         }
 
         var handleGarage_query = @"
-            INSERT OR REPLACE INTO GARAGE (DealerId, CarId, StockLevel)
+            INSERT OR REPLACE INTO Garages (DealerId, CarId, StockLevel)
             VALUES (@DealerId, @CarId, @StockLevel);
         ";
 
@@ -55,13 +55,13 @@ public class CarRepository : ICarRepository
         using var connection = _connectionFactory.CreateConnection();
         var offset = (page - 1) * pageSize;
         var executable_query = @"
-            SELECT COUNT(*) FROM Garage WHERE DealerId = @DealerId;
+            SELECT COUNT(*) FROM Garages WHERE DealerId = @DealerId;
         ";
 
         var totalCount = await connection.ExecuteScalarAsync<int>(executable_query, new {DealerId = dealerId});
 
         var getAllCars_query = @"
-            SELECT c.Id, c.Make, c.Model, c.Year, g.StockLevel FROM Garage AS g
+            SELECT c.Id AS CarId, c.Make, c.Model, c.Year, g.StockLevel FROM Garages AS g
             INNER JOIN Cars AS c ON g.CarId = c.Id
             WHERE g.DealerId = @DealerId
             ORDER BY c.Id LIMIT @Limit OFFSET @Offset;
@@ -75,7 +75,7 @@ public class CarRepository : ICarRepository
     {
         using var connection = _connectionFactory.CreateConnection();
         var execute_query = @"
-            DELETE FROM Garage
+            DELETE FROM Garages
             WHERE CarId = @CarId AND DealerId = @DealerId;
             ";
 
@@ -90,7 +90,7 @@ public class CarRepository : ICarRepository
         using var connection = _connectionFactory.CreateConnection();
 
         var count_query = @"
-            SELECT COUNT(*) FROM Garage AS g
+            SELECT COUNT(*) FROM Garages AS g
             INNER JOIN Cars AS c ON (c.Id = g.CarId)
             WHERE g.DealerId = @DealerId
             AND (@Make IS NULL OR @Make = '' OR c.Make LIKE '%' || @Make || '%')
@@ -98,8 +98,8 @@ public class CarRepository : ICarRepository
         ";
 
         var carSearch_query = @"
-            SELECT c.Id AS CarId, c.Make, c.Model, c.Year, g.StockLevel FROM Garage AS g
-            INNER JOIN Cars AS c ON (g.CarId = c.CarId)
+            SELECT c.Id AS CarId, c.Make, c.Model, c.Year, g.StockLevel FROM Garages AS g
+            INNER JOIN Cars AS c ON (g.CarId = c.Id)
             WHERE g.DealerId = @DealerId
             AND (@Make IS NULL OR @Make = '' OR c.Make LIKE '%' || @Make || '%')
             AND (@Model IS NULL OR @Model = '' OR c.Model = '%' || @Model || '%')
@@ -117,7 +117,7 @@ public class CarRepository : ICarRepository
         using var connection = _connectionFactory.CreateConnection();
 
         var execute_query = @"
-            UPDATE Garage SET StockLevel = @StockLevel WHERE CarId = @CarId AND DealerId = @DealerId;
+            UPDATE Garages SET StockLevel = @StockLevel WHERE CarId = @CarId AND DealerId = @DealerId;
         ";
 
         int rows = await connection.ExecuteAsync(execute_query, new {CarId = carId, DealerId = dealerId, StockLevel = stockLevel});

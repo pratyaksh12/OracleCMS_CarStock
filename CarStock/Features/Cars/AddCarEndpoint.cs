@@ -15,7 +15,7 @@ public class AddCarRequest
     public int Year {get; set;}
     public int StockLevel{get; set;}
 }
-public class AddCarEndpoint(ICarRepository _carRepoitory) : Endpoint<AddCarRequest, object>
+public class AddCarEndpoint(ICarRepository _carRepoitory) : Endpoint<AddCarRequest, EmptyResponse>
 {    
     
     public override void Configure()

@@ -11,7 +11,7 @@ public class SearchCarRequest
     [QueryParam] public int Page{get; set;}
     [QueryParam] public int Size{get; set;}
 }
-public class SearchCarEndpoint(ICarRepository _carRepository) : Endpoint<SearchCarRequest, object>
+public class SearchCarEndpoint(ICarRepository _carRepository) : Endpoint<SearchCarRequest, EmptyResponse>
 {
     public override void Configure()
     {

@@ -9,7 +9,7 @@ public class DeleteCarRequest
 {
     public int CarId{get; set;}
 }
-public class DeleteCarEndpoint(ICarRepository _carRepository) : Endpoint<DeleteCarRequest>
+public class DeleteCarEndpoint(ICarRepository _carRepository) : Endpoint<DeleteCarRequest, EmptyResponse>
 {
     public override void Configure()
     {

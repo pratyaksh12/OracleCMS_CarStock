@@ -19,7 +19,7 @@ public class DatabaseInitialize
 
         connection.Execute(@"
             CREATE TABLE IF NOT EXISTS Dealers(
-            Id INT PRIMARY KEY AUTOINCREMENT,
+            Id INTEGER PRIMARY KEY AUTOINCREMENT,
             UserName TEXT NOT NULL UNIQUE,
             PasswordHash TEXT NOT NULL
             )
@@ -27,18 +27,18 @@ public class DatabaseInitialize
 
         connection.Execute(@"
             CREATE TABLE IF NOT EXISTS Cars(
-            Id INT PRIMARY KEY AUTOINCREMENT,
+            Id INTEGER PRIMARY KEY AUTOINCREMENT,
             Make VARCHAR(255) NOT NULL,
             Model VARCHAR(255) NOT NULL,
-            Year INT NOT NULL
+            Year INTEGER NOT NULL
             )
         ");
 
         connection.Execute(@"
             CREATE TABLE IF NOT EXISTS Garages(
-            CarId INT NOT NULL,
-            DealerId INT NOT NULL,
-            StockLevel INT NOT NULL,
+            CarId INTEGER NOT NULL,
+            DealerId INTEGER NOT NULL,
+            StockLevel INTEGER NOT NULL,
             PRIMARY KEY(DealerId, CarId),
             FOREIGN KEY(DealerId) REFERENCES Dealers(Id) ON DELETE CASCADE,
             FOREIGN KEY(CarId) REFERENCES Cars(Id) ON DELETE CASCADE

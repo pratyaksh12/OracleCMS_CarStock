@@ -11,7 +11,7 @@ public class UpdateStockRequest
     public int CarId{get; set;}
     public int StockLevel{get; set;}
 }
-public class UpdateStockEndpoint(ICarRepository _carRepository) : Endpoint<UpdateStockRequest>
+public class UpdateStockEndpoint(ICarRepository _carRepository) : Endpoint<UpdateStockRequest, EmptyResponse>
 {
     public override void Configure()
     {
