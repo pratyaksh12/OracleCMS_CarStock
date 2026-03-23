@@ -44,5 +44,12 @@ public class DatabaseInitialize
             FOREIGN KEY(CarId) REFERENCES Cars(Id) ON DELETE CASCADE
             )
         ");
+
+        connection.Execute(@"
+            CREATE INDEX IF NOT EXISTS IDX_Cars_Make_Model_Year ON Cars(Make, Model, Year)
+        ");
+        connection.Execute(@"
+            CREATE INDEX IF NOT EXISTS IDX_Garages_CarId ON Garages(CarId)
+        ");
     }
 }

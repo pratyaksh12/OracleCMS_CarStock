@@ -39,12 +39,14 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 
         if(dealer is null)
         {
-            await _dealerRepository.CreateAsync(new Dealer{Username = request.Username, PasswordHash = request.Password});
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password, workFactor: 10);
+            await _dealerRepository.CreateAsync(new Dealer{Username = request.Username, PasswordHash = passwordHash});
             dealer = await _dealerRepository.GetByUsernameAsync(request.Username);
         }
-        else if(dealer.PasswordHash != request.Password)
+        else if(!BCrypt.Net.BCrypt.Verify(request.Password, dealer.PasswordHash))
         {
             HttpContext.Response.StatusCode = 401;
+            await HttpContext.Response.WriteAsJsonAsync("Incorrect Username or Password", cancellationToken: stoppingToken);
             return;    
         }
 
