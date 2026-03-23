@@ -48,12 +48,14 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
             return;    
         }
 
-        var jwtSecret = _config["Jwt:Secret"] ?? throw new Exception("Jwt secret missing. Set it in the appsetting");
+        
 
         var token = JwtBearer.CreateToken(
             options =>
             {
-                options.SigningKey = jwtSecret;
+                options.SigningKey = _config["Jwt:Secret"]!;
+                options.Issuer = _config["Jwt:Issuer"];
+                options.Audience = _config["Jwt:Audience"];
                 options.ExpireAt = DateTime.UtcNow.AddDays(1);
                 options.User.Claims.Add(("DealerId", dealer!.Id.ToString()));
             }

@@ -1,9 +1,14 @@
+using System.Text;
 using CarStock.Data;
 using CarStock.IRepositories;
 using CarStock.Repositories;
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.IdentityModel.Tokens;
+using CarStock.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +18,21 @@ builder.Services.AddScoped<IDealerRepository, DealerRepository>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 
 var jwtSecret = builder.Configuration["Jwt:Secret"] ?? throw new Exception("Jwt secret not found. Set a secret key in the appsetting file.");
-builder.Services.AddAuthenticationJwtBearer(s => s.SigningKey = jwtSecret);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
+    options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret))
+        };
+    }
+);
 builder.Services.AddAuthorization();
 builder.Services.AddFastEndpoints();
 builder.Services.SwaggerDocument();
@@ -35,6 +54,7 @@ using(var services = app.Services.CreateScope())
 }
 
 app.UseCors("AllowAll");
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseFastEndpoints();
