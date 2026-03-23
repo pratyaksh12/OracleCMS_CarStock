@@ -1,4 +1,5 @@
 using System;
+using System.Net.Mime;
 using System.Text.Json;
 
 namespace CarStock.Middleware;
@@ -36,9 +37,9 @@ public class ExceptionHandlingMiddleware
         {
             StatusCode = context.Response.StatusCode,
             Message = message,
-            Detail = _env.IsDevelopment() ? ex.StackTrace : null
+            Detail = _env.IsDevelopment() ? ex.StackTrace : null,
         });
-
+        context.Response.ContentType = "application/json";
         await context.Response.WriteAsync(result);
     }
 }

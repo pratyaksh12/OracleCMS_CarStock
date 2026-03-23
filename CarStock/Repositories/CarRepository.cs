@@ -95,20 +95,19 @@ public class CarRepository : ICarRepository
             WHERE g.DealerId = @DealerId
             AND (
                 (@Make IS NULL OR @Make = '' OR c.Make LIKE @Make || '%')
-                OR (@Model IS NULL OR @Model = '' OR c.Model LIKE @Model || '%')
+                AND (@Model IS NULL OR @Model = '' OR c.Model LIKE @Model || '%')
             );
         ";
 
         var carSearch_query = @"
             SELECT c.Id AS CarId, c.Make, c.Model, c.Year, g.StockLevel FROM Garages AS g
-            INNER JOIN Cars AS c ON (g.CarId = c.Id)
+            INNER JOIN Cars AS c ON g.CarId = c.Id
             WHERE g.DealerId = @DealerId
-            AND (
-                (@Make IS NULL OR @Make = '' OR c.Make LIKE @Make || '%')
-                OR (@Model IS NULL OR @Model = '' OR c.Model LIKE @Model || '%')
-            )
+            AND (@Make IS NULL OR @Make = '' OR c.Make LIKE @Make || '%')
+            AND (@Model IS NULL OR @Model = '' OR c.Model LIKE @Model || '%')
             ORDER BY c.Id LIMIT @Limit OFFSET @Offset;
         ";
+
 
         var totalCount = await connection.ExecuteScalarAsync<int>(count_query, new {DealerId = dealerId, Make = make, Model = model});
         var cars = await connection.QueryAsync<CarStockDto>(carSearch_query, new {DealerId = dealerId, Make = make, Model = model, Limit = pageSize, Offset = offset});

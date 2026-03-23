@@ -7,16 +7,18 @@
   let cars: any[] = $state([]);
   let error = $state('');
   let newCar: Record<string, any> = $state({ Make: '', Model: '', Year: new Date().getFullYear(), StockLevel: 1 });
-  let searchQuery = $state('');
+  let searchMake = $state('');
+  let searchModel = $state('');
   
   const API_BASE = 'http://localhost:5237';
   
   async function fetchCars() {
     try {
       let url = `${API_BASE}/cars`;
-      if (searchQuery.trim()) {
-        const q = encodeURIComponent(searchQuery);
-        url = `${API_BASE}/cars/search?Make=${q}&Model=${q}`;
+      if (searchMake.trim() || searchModel.trim()) {
+        const makeQuery = encodeURIComponent(searchMake.trim());
+        const modelQuery = encodeURIComponent(searchModel.trim());
+        url = `${API_BASE}/cars/search?Make=${makeQuery}&Model=${modelQuery}`;
       }
       
       const res = await fetch(url, {
@@ -122,10 +124,11 @@
     <div class="table-header">
       <h3>Current Stock</h3>
       <div class="search-bar">
-        <input bind:value={searchQuery} placeholder="Search by Make or Model..." />
+        <input bind:value={searchMake} placeholder="Search by Make..." />
+        <input bind:value={searchModel} placeholder="Search by Model..." />
         <button class="btn secondary" onclick={fetchCars}>Search</button>
-        {#if searchQuery}
-          <button class="btn" onclick={() => { searchQuery = ''; fetchCars(); }}>Clear</button>
+        {#if searchMake || searchModel}
+          <button class="btn" onclick={() => { searchMake = ''; searchModel = ''; fetchCars(); }}>Clear</button>
         {/if}
       </div>
     </div>
