@@ -46,10 +46,10 @@ public class DatabaseInitialize
         ");
 
         connection.Execute(@"
-            CREATE INDEX IF NOT EXISTS IDX_Cars_Make_Model_Year ON Cars(Make, Model, Year)
+            CREATE INDEX IF NOT EXISTS IDX_Cars_Make_Model_Year ON Cars(Make, Model, Year);
         ");
         connection.Execute(@"
-            CREATE INDEX IF NOT EXISTS IDX_Garages_CarId ON Garages(CarId)
+            CREATE INDEX IF NOT EXISTS IDX_Garages_CarId ON Garages(CarId);
         ");
     }
 }

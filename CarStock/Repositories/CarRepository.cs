@@ -94,8 +94,8 @@ public class CarRepository : ICarRepository
             INNER JOIN Cars AS c ON (c.Id = g.CarId)
             WHERE g.DealerId = @DealerId
             AND (
-                (@Make IS NULL OR @Make = '' OR c.Make LIKE '%' || @Make || '%')
-                OR (@Model IS NULL OR @Model = '' OR c.Model LIKE '%' || @Model || '%')
+                (@Make IS NULL OR @Make = '' OR c.Make LIKE @Make || '%')
+                OR (@Model IS NULL OR @Model = '' OR c.Model LIKE @Model || '%')
             );
         ";
 
@@ -104,8 +104,8 @@ public class CarRepository : ICarRepository
             INNER JOIN Cars AS c ON (g.CarId = c.Id)
             WHERE g.DealerId = @DealerId
             AND (
-                (@Make IS NULL OR @Make = '' OR c.Make LIKE '%' || @Make || '%')
-                OR (@Model IS NULL OR @Model = '' OR c.Model LIKE '%' || @Model || '%')
+                (@Make IS NULL OR @Make = '' OR c.Make LIKE @Make || '%')
+                OR (@Model IS NULL OR @Model = '' OR c.Model LIKE @Model || '%')
             )
             ORDER BY c.Id LIMIT @Limit OFFSET @Offset;
         ";

@@ -35,13 +35,14 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 
     public override async Task HandleAsync(LoginRequest request, CancellationToken stoppingToken)
     {
-        var dealer = await _dealerRepository.GetByUsernameAsync(request.Username);
+        var username = request.Username.ToLowerInvariant();
+        var dealer = await _dealerRepository.GetByUsernameAsync(username);
 
         if(dealer is null)
         {
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password, workFactor: 10);
-            await _dealerRepository.CreateAsync(new Dealer{Username = request.Username, PasswordHash = passwordHash});
-            dealer = await _dealerRepository.GetByUsernameAsync(request.Username);
+            await _dealerRepository.CreateAsync(new Dealer{Username = username, PasswordHash = passwordHash});
+            dealer = await _dealerRepository.GetByUsernameAsync(username);
         }
         else if(!BCrypt.Net.BCrypt.Verify(request.Password, dealer.PasswordHash))
         {
