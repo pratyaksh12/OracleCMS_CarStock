@@ -16,8 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features/Cars/" />
-    <Folder Include="Features/Validators/" />
     <Folder Include="Middleware/" />
     <Folder Include="Models/" />
     <Folder Include="Repositories/" />
