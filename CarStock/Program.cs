@@ -12,11 +12,13 @@ using CarStock.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// register all services
 builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
 builder.Services.AddSingleton<DatabaseInitialize>();
 builder.Services.AddScoped<IDealerRepository, DealerRepository>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 
+// Set jwt Parameters
 var jwtSecret = builder.Configuration["Jwt:Secret"] ?? throw new Exception("Jwt secret not found. Set a secret key in the appsetting file.");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
     options =>
@@ -37,6 +39,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddFastEndpoints();
 builder.Services.SwaggerDocument();
 
+// Cors for allowing the frontend to interact. All endpoints are allowed for now for simplicity
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -47,6 +50,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// Making sure to initialize the db
 using(var services = app.Services.CreateScope())
 {
     var dbInit = services.ServiceProvider.GetRequiredService<DatabaseInitialize>();

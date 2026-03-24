@@ -15,6 +15,7 @@ public class UpdateStockEndpoint(ICarRepository _carRepository) : Endpoint<Updat
 {
     public override void Configure()
     {
+        // Using patch to perform partial updates.
         Patch("cars/{CarId}/stock");
     }
     public override async Task HandleAsync(UpdateStockRequest req, CancellationToken ct)

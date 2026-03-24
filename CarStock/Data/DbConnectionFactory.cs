@@ -17,6 +17,7 @@ public class DbConnectionFactory : IDbConnectionFactory
     {
         _config = config;
     }
+    // function to load connectionstring and to connect to the database
     public IDbConnection CreateConnection()
     {
         var connectionString = _config.GetConnectionString("DefaultConnection") ?? throw new Exception("Default connection not found. Please describe a connection in the appsetting.json file.");

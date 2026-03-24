@@ -17,6 +17,7 @@ public class DatabaseInitialize
         using var connection = _connectionFactory.CreateConnection();
         connection.Open();
 
+        // Dealers table to hold data for dealers
         connection.Execute(@"
             CREATE TABLE IF NOT EXISTS Dealers(
             Id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -25,6 +26,7 @@ public class DatabaseInitialize
             )
         ");
 
+        // cars table to hold data for cars
         connection.Execute(@"
             CREATE TABLE IF NOT EXISTS Cars(
             Id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,7 +35,7 @@ public class DatabaseInitialize
             Year INTEGER NOT NULL
             )
         ");
-
+        // Garages for mapping a many-to-many relationship between cars and dealers
         connection.Execute(@"
             CREATE TABLE IF NOT EXISTS Garages(
             CarId INTEGER NOT NULL,
@@ -45,6 +47,7 @@ public class DatabaseInitialize
             )
         ");
 
+        // Indexes
         connection.Execute(@"
             CREATE INDEX IF NOT EXISTS IDX_Cars_Make_Model_Year ON Cars(Make, Model, Year);
         ");

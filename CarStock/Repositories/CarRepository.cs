@@ -3,6 +3,7 @@ using CarStock.Data;
 using CarStock.IRepositories;
 using CarStock.Models;
 using Dapper;
+using FastEndpoints;
 
 namespace CarStock.Repositories;
 
@@ -14,6 +15,8 @@ public class CarRepository : ICarRepository
     {
         _connectionFactory = connectionFactory;
     }
+
+    // Simple update or addition of car. Looks for the car based off of the details. If not exists then creates a new one
     public async Task<int> AddOrUpdateCarInGarageAsync(int dealerId, Car car, int stockLevel)
     {
         using var connection = _connectionFactory.CreateConnection();
@@ -50,6 +53,7 @@ public class CarRepository : ICarRepository
         
     }
 
+    // fetch all the cars related to the dealer. return a list of cars and totalCount for pagoination
     public async Task<(IList<CarStockDto> Cars, int TotalCount)> GetAllForDealerAsync(int dealerId, int page, int pageSize)
     {
         using var connection = _connectionFactory.CreateConnection();
@@ -71,6 +75,7 @@ public class CarRepository : ICarRepository
         return (cars, totalCount);
     }
 
+    // Simple delete 
     public async Task<bool> RemoveCarFromGarageAsync(int dealerId, int carId)
     {
         using var connection = _connectionFactory.CreateConnection();
@@ -84,6 +89,7 @@ public class CarRepository : ICarRepository
         return rows > 0;
     }
 
+    // function to search for particular car. Takes in Make or Model or both for searching. Returns List of cars and count fpr pagination
     public async Task<(IList<CarStockDto> Cars, int TotalCount)> SearchAsync(int dealerId, string make, string model, int page, int pageSize)
     {
         var offset = (page - 1) * pageSize;
@@ -115,6 +121,7 @@ public class CarRepository : ICarRepository
         return (cars.ToList(), totalCount);
     }
 
+    // update stock level in the garage
     public async Task<bool> UpdateStockLevelAsync(int dealerId, int carId, int stockLevel)
     {
         using var connection = _connectionFactory.CreateConnection();

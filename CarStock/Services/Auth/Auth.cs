@@ -33,6 +33,7 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
         AllowAnonymous();
     }
 
+    // login and signup for the dealer. Dealer needs to have a unique name. For simplicity signup and login is using the same endpoint
     public override async Task HandleAsync(LoginRequest request, CancellationToken stoppingToken)
     {
         var username = request.Username.ToLowerInvariant();
@@ -52,7 +53,7 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
         }
 
         
-
+        // JwtBearer token for authorization
         var token = JwtBearer.CreateToken(
             options =>
             {

@@ -4,6 +4,8 @@ using System.Text.Json;
 
 namespace CarStock.Middleware;
 
+
+// Class to handle any unhandled exception so that the user doesn't see an error stack
 public class ExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;

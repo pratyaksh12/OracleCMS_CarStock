@@ -13,6 +13,8 @@ public class DealerRepository : IDealerRepository
     {
         _connectionFactory = connectionFactory;
     }
+
+    // simple cerate. Takes in username and password to create a dealer
     public async Task<int> CreateAsync(Dealer dealer)
     {
         using var connection = _connectionFactory.CreateConnection();
@@ -26,6 +28,7 @@ public class DealerRepository : IDealerRepository
         return await connection.ExecuteScalarAsync<int>(executable_query, dealer);
     }
 
+    // Fetch dealer details by username
     public async Task<Dealer?> GetByUsernameAsync(string username)
     {
         using var connection = _connectionFactory.CreateConnection();
